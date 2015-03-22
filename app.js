@@ -8,17 +8,22 @@ var server = restify.createServer({name: 'grafana-statsusage'});
 
 program
   .version(pkg.version)
-  .option('-g, --graphite <graphite>', 'Graphite address');
+  .option('-g, --graphite <graphite>', 'Graphite address')
+  .option('--interval <seconds>', 'Interval in seconds');
 
 program.parse(process.argv);
 
-if (!program.graphite) {
+if (!program.graphite || !program.interval) {
   program.outputHelp();
   process.exit(1);
 }
 
 var graphiteUrl = 'plaintext://' + program.graphite;
+var intervalMs = parseInt(program.interval) * 1000;
 var prefix = "grafana.usagestats.";
+
+console.log('Graphite: ' + graphiteUrl);
+console.log('Interval: ' + intervalMs);
 
 server
   .use(restify.fullResponse())
@@ -47,7 +52,7 @@ function sendMetrics() {
 	metrics = {};
 }
 
-setInterval(sendMetrics, 10000);
+setInterval(sendMetrics, intervalMs);
 
 server.post('/grafana-usage-report', function (req, res, next) {
   var report = req.body;
