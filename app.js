@@ -39,7 +39,7 @@ function incrementCounter(name, amount) {
 
 function sendMetrics() {
   _.each(metrics, function(value, key) {
-	  console.log('key: ' + key + ' = ' + value);
+	  //console.log('key: ' + key + ' = ' + value);
 	});
 
   var client = graphite.createClient(graphiteUrl);
@@ -57,7 +57,7 @@ setInterval(sendMetrics, intervalMs);
 server.post('/grafana-usage-report', function (req, res, next) {
   var report = req.body;
 
-  console.log('report received: ', report);
+  //console.log('report received: ', report);
 
   var versionedPrefix = prefix + 'versions.' + report.version + '.';
   var allPrefix = prefix + 'versions.all.';
