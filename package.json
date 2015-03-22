@@ -1,0 +1,19 @@
+{
+  "name": "grafana-usagestats-handler",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "commander": "^2.7.1",
+    "graphite": "0.0.6",
+    "lodash": "^3.5.0",
+    "restify": "^3.0.1",
+    "save": "^2.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Torkel Ödegaard <torkel.odegaard@gmail.com>",
+  "license": "ISC"
+}
