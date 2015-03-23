@@ -60,7 +60,7 @@ server.post('/grafana-usage-report', function (req, res, next) {
   //console.log('report received: ', report);
 
   var versionedPrefix = prefix + 'versions.' + report.version + '.';
-  var allPrefix = prefix + 'versions.all.';
+  var allPrefix = prefix + 'all.';
 
   incrementCounter(versionedPrefix + 'reports.count', 1);
   incrementCounter(allPrefix + 'reports.count', 1);
