@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var restify = require('restify');
 var client = restify.createJsonClient({ url: 'http://localhost:9200' });
 
