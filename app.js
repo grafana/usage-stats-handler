@@ -2,6 +2,7 @@ var program = require('commander');
 var graphite = require('graphite');
 var pkg = require('./package.json');
 var _ = require('lodash');
+var elastic = require('./elastic');
 
 var restify = require('restify');
 var server = restify.createServer({name: 'grafana-statsusage'});
@@ -57,6 +58,7 @@ setInterval(sendMetrics, intervalMs);
 server.post('/grafana-usage-report', function (req, res, next) {
   var report = req.body;
 
+  elastic.saveReport(report);
   //console.log('report received: ', report);
 
   var versionedPrefix = prefix + 'versions.' + report.version + '.';
@@ -71,6 +73,14 @@ server.post('/grafana-usage-report', function (req, res, next) {
 	});
 
 	res.send({message: 'ok'});
+});
+
+server.use(function(err, req, res, next) {
+  if (err) {
+    console.error("error!", err.toString());
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+  }
 });
 
 server.listen(3540, function () {
