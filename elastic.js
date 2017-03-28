@@ -4,9 +4,7 @@ var client = restify.createJsonClient({ url: 'http://localhost:9200' });
 
 console.log('Starting Elasticsearch logger');
 
-client.put('/_template/usage-stats', {
-  "template" : "usage-stats",
-  "settings" : { "number_of_shards" : 1, "number_of_replicas": 0 },
+client.put('/usage-stats3', {  
   "mappings" : {
     "report" : {
       "_source" : {"enabled" : true },
@@ -44,7 +42,7 @@ function saveReport(report) {
   metrics["@timestamp"] = new Date().getTime();
   metrics.version = report.version;
 
-  client.post('/usage-stats/report', metrics, function(err) {
+  client.post('/usage-stats3/report', metrics, function(err) {
     if (err) {
       console.log('Metric write error', err);
     }
