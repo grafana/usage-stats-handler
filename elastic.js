@@ -18,7 +18,7 @@ client.put('/usage-stats3', {
           "strings": {
             "match_mapping_type": "string",
             "mapping": {
-              "type": "string",
+              "type": "keyword",
               "index" : "not_analyzed",
               "omit_norms" : true,
             }
