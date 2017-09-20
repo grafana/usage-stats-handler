@@ -41,6 +41,8 @@ function saveReport(report) {
 
   metrics["@timestamp"] = new Date().getTime();
   metrics.version = report.version;
+  metrics.os = report.os;
+  metrics.arch = report.arch;
 
   client.post('/usage-stats3/report', metrics, function(err) {
     if (err) {
