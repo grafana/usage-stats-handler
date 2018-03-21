@@ -1,35 +1,40 @@
 var _ = require('lodash');
 var restify = require('restify');
-var client = restify.createJsonClient({ url: 'http://localhost:9200' });
+var client;
 
 console.log('Starting Elasticsearch logger');
 
-client.put('/usage-stats3', {  
-  "mappings" : {
-    "report" : {
-      "_source" : {"enabled" : true },
+function initElastic(opts) {
+  console.log("configured elastic ", opts);
+  client = restify.createJsonClient({ url: opts.url });
 
-      "properties": {
-        "@timestamp": {type: 'date', "format": "epoch_millis" },
-      },
+  client.put('/usage-stats3', {
+    "mappings" : {
+      "report" : {
+        "_source" : {"enabled" : true },
 
-      "dynamic_templates": [
-        {
-          "strings": {
-            "match_mapping_type": "string",
-            "mapping": {
-              "type": "keyword",
-              "index" : "not_analyzed",
-              "omit_norms" : true,
+        "properties": {
+          "@timestamp": {type: 'date', "format": "epoch_millis" },
+        },
+
+        "dynamic_templates": [
+          {
+            "strings": {
+              "match_mapping_type": "string",
+              "mapping": {
+                "type": "keyword",
+                "index" : "not_analyzed",
+                "omit_norms" : true,
+              }
             }
           }
-        }
-      ]
+        ]
+      }
     }
-  }
-}, function(err) {
-  console.log('template mapping res:', err);
-});
+  }, function(err) {
+    console.log('template mapping res:', err);
+  });
+}
 
 function saveReport(report) {
 
@@ -52,5 +57,6 @@ function saveReport(report) {
 }
 
 module.exports = {
-  saveReport: saveReport
+  saveReport: saveReport,
+  initElastic: initElastic
 };
