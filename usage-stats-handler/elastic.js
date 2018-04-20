@@ -49,7 +49,7 @@ function saveReport(report) {
   metrics.os = report.os;
   metrics.arch = report.arch;
 
-  client.post('/usage-stats3/report', metrics, function(err) {
+  client.post('/usage-stats4/report', metrics, function(err) {
     if (err) {
       console.log('Metric write error', err);
     }
