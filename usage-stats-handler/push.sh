@@ -1,5 +1,5 @@
 #/bin/sh
-VERSION=v2
+VERSION=v3
 
 # docker build -t grafana/usage-stats-handler:latest -t grafana/usage-stats-handler:$VERSION --no-cache=true .
 
