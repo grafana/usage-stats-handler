@@ -8,7 +8,7 @@ function initElastic(opts) {
   console.log("configured elastic ", opts);
   client = restify.createJsonClient({ url: opts.url });
 
-  client.put('/usage-stats3', {
+  client.put('/usage-stats4', {
     "mappings" : {
       "report" : {
         "_source" : {"enabled" : true },
