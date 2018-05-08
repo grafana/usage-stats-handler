@@ -10,6 +10,7 @@ var server = restify.createServer({name: 'grafana-statsusage'});
 program
   .version(pkg.version)
   .option('-g, --graphite <graphite>', 'Graphite address')
+  .option('-e, --elastic <elastic>', 'Elastic address')
   .option('--interval <seconds>', 'Interval in seconds');
 
 program.parse(process.argv);
@@ -18,6 +19,8 @@ if (!program.graphite || !program.interval) {
   program.outputHelp();
   process.exit(1);
 }
+
+elastic.initElastic({ url: program.elastic });
 
 var graphiteUrl = 'plaintext://' + program.graphite;
 var intervalMs = parseInt(program.interval) * 1000;
