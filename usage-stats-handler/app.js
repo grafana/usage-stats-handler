@@ -43,17 +43,18 @@ function incrementCounter(name, amount) {
 
 function sendMetrics() {
   _.each(metrics, function(value, key) {
-	  //console.log('key: ' + key + ' = ' + value);
-	});
+    //console.log('key: ' + key + ' = ' + value);
+  });
 
   var client = graphite.createClient(graphiteUrl);
-	client.write(metrics, function(err) {
-	  if (err) {
-	    console.log('graphite error', err);
-	  }
-	});
+  client.write(metrics, function(err) {
+    if (err) {
+      console.log('graphite error', err);
+    }
+    client.end();
+  });
 
-	metrics = {};
+  metrics = {};
 }
 
 setInterval(sendMetrics, intervalMs);
@@ -70,12 +71,12 @@ server.post('/grafana-usage-report', function (req, res, next) {
   incrementCounter(versionedPrefix + 'reports.count', 1);
   incrementCounter(allPrefix + 'reports.count', 1);
 
-	_.each(report.metrics, function(value, key) {
-	  incrementCounter(versionedPrefix + key, value);
-	  incrementCounter(allPrefix + key, value);
-	});
+  _.each(report.metrics, function(value, key) {
+    incrementCounter(versionedPrefix + key, value);
+    incrementCounter(allPrefix + key, value);
+  });
 
-	res.send({message: 'ok'});
+  res.send({message: 'ok'});
 });
 
 server.use(function(err, req, res, next) {
