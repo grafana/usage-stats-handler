@@ -8,7 +8,7 @@
     "graphite": "0.0.6",
     "lodash": "^3.5.0",
     "moment": "^2.24.0",
-    "restify": "^3.0.1",
+    "restify": "^4.1.0",
     "save": "^2.1.0"
   },
   "devDependencies": {},
