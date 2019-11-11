@@ -30,8 +30,9 @@ console.log('Graphite: ' + graphiteUrl);
 console.log('Interval: ' + intervalMs);
 
 server
-  .use(restify.fullResponse())
-  .use(restify.bodyParser());
+  .use(restify.plugins.fullResponse())
+  .use(restify.plugins.queryParser())
+  .use(restify.plugins.bodyParser());
 
 var metrics = {};
 
@@ -63,7 +64,7 @@ server.post('/grafana-usage-report', function (req, res, next) {
   var report = req.body;
 
   elastic.saveReport(report);
-  //console.log('report received: ', report);
+  console.log('report received: ', report);
 
   var versionedPrefix = prefix + 'versions.' + report.version + '.';
   var allPrefix = prefix + 'all.';
