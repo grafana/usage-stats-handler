@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var restify = require('restify');
+var restify = require('restify-clients');
 var moment = require('moment');
 var client;
 
@@ -7,6 +7,7 @@ console.log('Starting Elasticsearch logger');
 
 function initElastic(opts) {
   console.log("configured elastic ", opts);
+  console.log(restify);
   client = restify.createJsonClient({ url: opts.url });
 
   client.put('/_template/usage-stats', {
