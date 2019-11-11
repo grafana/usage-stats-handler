@@ -6,7 +6,7 @@
   "dependencies": {
     "commander": "^2.7.1",
     "graphite-client": "^1.0.1",
-    "lodash": "^3.5.0",
+    "lodash": "^4.17.13",
     "restify": "^3.0.1",
     "save": "^2.1.0"
   },
