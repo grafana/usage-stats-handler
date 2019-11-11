@@ -1,4 +1,4 @@
-FROM node:6.11.1
+FROM node:12.13.0
 WORKDIR /usr/src/app/
 COPY package.json yarn.lock app.js elastic.js run.sh ./
 RUN yarn install --frozen-lockfile
