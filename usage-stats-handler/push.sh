@@ -1,12 +1,8 @@
 #/bin/sh
-VERSION=v3
+IMAGENAME=grafana/usage-stats-handler
+VERSION=v4
 
-# docker build -t grafana/usage-stats-handler:latest -t grafana/usage-stats-handler:$VERSION --no-cache=true .
+docker build -t $IMAGENAME:latest -t $IMAGENAME:$VERSION --no-cache=true .
 
-# docker push grafana/usage-stats-handler:latest
-# docker push grafana/usage-stats-handler:$VERSION
-
-docker build -t bergquist/usage-stats-handler:latest -t bergquist/usage-stats-handler:$VERSION --no-cache=true .
-
-docker push bergquist/usage-stats-handler:latest
-docker push bergquist/usage-stats-handler:$VERSION
+docker push $IMAGENAME:latest
+docker push $IMAGENAME:$VERSION
