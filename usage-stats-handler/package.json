@@ -6,7 +6,7 @@
   "dependencies": {
     "commander": "^4.0.1",
     "graphite": "0.0.6",
-    "lodash": "^3.5.0",
+    "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "restify": "^8.4.0",
     "restify-clients": "^2.6.7",
