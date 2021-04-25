@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+GIT_REVISION=$(git rev-parse --short HEAD)
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+BUILD_USER=$(whoami)@$(hostname)
+WIP_SUFFIX=$(if git status --porcelain | grep -qE '^(?:[^?][^ ]|[^ ][^?])\s'; then echo "-WIP"; else echo ""; fi)
+
+case "$1" in
+docker)
+	if [ -n "${WIP_SUFFIX}" ]; then
+		SANITIZED_GIT_BRANCH=${GIT_BRANCH//[^a-z^A-Z^\-]/-}
+		echo "${SANITIZED_GIT_BRANCH}-${GIT_REVISION}${WIP_SUFFIX}"
+	else
+		echo "${GIT_REVISION}"
+	fi
+	;;
+goflags)
+	VPREFIX=github.com/grafana/hosted-grafana/pkg/build
+	echo "-X ${VPREFIX}.Branch=${GIT_BRANCH}" \
+		"-X ${VPREFIX}.Version=${GIT_REVISION}" \
+		"-X ${VPREFIX}.Revision=${GIT_REVISION}${WIP_SUFFIX}" \
+		"-X ${VPREFIX}.BuildUser=${BUILD_USER}"
+	;;
+*)
+	echo "$0 {docker | goflags}" >&2
+	exit 1
+	;;
+esac 
