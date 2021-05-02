@@ -1,6 +1,6 @@
 .DEFAULT_GOAL = build
 BIN_DIR := bin
-IMAGE_PREFIX ?= us.gcr.io/hosted-grafana
+IMAGE_PREFIX ?= us.gcr.io/usage-stats-handler
 
 GO_LDFLAGS ?= $(shell ./scripts/version goflags)
 GO_FLAGS   := -ldflags "-w -s $(GO_LDFLAGS)"

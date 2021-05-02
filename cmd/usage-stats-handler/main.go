@@ -20,7 +20,7 @@ func main() {
 		serverConfig          server.Config
 		instrumentationConfig metricsutil.InstrumentationServerConfig
 		downstreamUrlFlag     string
-		applicationName       = "usage-stats"
+		applicationName       = "usage_stats_handler"
 	)
 
 	flagext.RegisterFlags(&serverConfig, &instrumentationConfig)
