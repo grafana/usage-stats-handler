@@ -2,10 +2,12 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 
+	"github.com/Jeffail/gabs"
 	"github.com/cortexproject/cortex/pkg/util"
 	"github.com/cortexproject/cortex/pkg/util/flagext"
 	"github.com/go-kit/kit/log/level"
@@ -43,6 +45,7 @@ func main() {
 	defer server.Shutdown()
 
 	server.HTTP.PathPrefix("/").Name("proxydownstream").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		logPayload(r)
 		httputil.NewSingleHostReverseProxy(downstreamUrl).ServeHTTP(w, r)
 	})
 
@@ -56,4 +59,20 @@ func main() {
 	defer instrumentationServer.Stop()
 
 	server.Run()
+}
+
+func logPayload(req *http.Request) {
+	copy := req.Clone(req.Context())
+
+	body, err := ioutil.ReadAll(copy.Body)
+	if err != nil {
+		level.Error(util.Logger).Log("failed to read body", "error", err)
+	}
+
+	jsonParsed, err := gabs.ParseJSON(body)
+	if err != nil {
+		level.Error(util.Logger).Log("failed to parse json", "error", err)
+	}
+
+	level.Info(util.Logger).Log("usage payload", jsonParsed)
 }
