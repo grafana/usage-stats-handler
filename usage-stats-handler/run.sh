@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "graphite: ${GRAPHITE}"
 echo "elastic:  ${ELASTIC}"
