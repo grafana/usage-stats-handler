@@ -1,13 +1,10 @@
-var _ = require('lodash');
-var restify = require('restify-clients');
-var moment = require('moment');
-var client;
-
-console.log('Starting Elasticsearch logger');
+const _ = require('lodash');
+const restify = require('restify-clients');
+const moment = require('moment');
+let client;
 
 function initElastic(opts) {
-  console.log("configured elastic ", opts);
-  console.log(restify);
+  console.log('Starting Elasticsearch logger');
   client = restify.createJsonClient({ url: opts.url });
 
   client.put('/_template/usage-stats', {
@@ -40,12 +37,11 @@ function initElastic(opts) {
 }
 
 function saveReport(report) {
-
-  var metrics = {};
+  const metrics = {};
 
   _.each(report.metrics, function(value, key) {
     metrics[key.replace(/\./g, "_")] = value;
-	});
+  });
 
   metrics["@timestamp"] = new Date().getTime();
   metrics.version = report.version;
