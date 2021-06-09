@@ -91,6 +91,12 @@ server.post('/grafana-usage-report', function (req, res, next) {
   });
 
   res.send({message: 'ok'});
+  return next();
+});
+
+server.get('/healthz', function (req, res, next) {
+  res.send({message: 'ok'});
+  return next();
 });
 
 server.use(function(err, req, res, next) {
