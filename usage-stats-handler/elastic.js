@@ -47,6 +47,7 @@ function saveReport(report) {
   metrics.version = report.version;
   metrics.os = report.os;
   metrics.arch = report.arch;
+  metrics.usage_stats_id = report.usageStatsId;
 
   client.post('/usage-stats-' + moment().format('YYYY.MM.DD') + '/report', metrics, function(err) {
     if (err) {
