@@ -79,7 +79,9 @@ server.post('/grafana-usage-report', function (req, res, next) {
 
   elastic.saveReport(report);
 
-  const versionedPrefix = prefix + 'versions.' + report.version + '.';
+  // group versions like 8_2_0-33922pre as 8_2_0-pre
+  const cleanVersion = report.version.replace(/-[a-f0-9]+pre$/, '-pre');
+  const versionedPrefix = prefix + 'versions.' + cleanVersion + '.';
   const allPrefix = prefix + 'all.';
 
   incrementCounter(versionedPrefix + 'reports.count', 1);
