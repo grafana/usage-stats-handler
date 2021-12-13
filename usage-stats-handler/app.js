@@ -2,7 +2,7 @@ const program = require('commander');
 const graphite = require('graphite');
 const pkg = require('./package.json');
 const _ = require('lodash');
-const elastic = require('./elastic');
+// const elastic = require('./elastic');
 
 const restify = require('restify');
 const server = restify.createServer({name: 'grafana-usage-stats'});
@@ -19,22 +19,22 @@ function parseIntOption(value) {
 program
   .version(pkg.version)
   .requiredOption('-g, --graphite <graphite>', 'Graphite address')
-  .requiredOption('-e, --elastic <elastic>', 'Elastic address')
+  .option('-e, --elastic <elastic>', 'Elastic address')
   .option('--interval <seconds>', 'Interval in seconds', parseIntOption, 600)
   .parse();
 
 const options = program.opts();
 
 const graphiteUrl = 'plaintext://' + options.graphite;
-const elasticUrl = options.elastic;
+// const elasticUrl = options.elastic;
 const intervalMs = parseInt(options.interval) * 1000;
 const prefix = "grafana.usagestats.";
 
 console.log('Graphite: ' + graphiteUrl);
-console.log('Elastic: ' + elasticUrl);
+// console.log('Elastic: ' + elasticUrl);
 console.log('Interval: ' + intervalMs);
 
-elastic.initElastic({ url: elasticUrl });
+// elastic.initElastic({ url: elasticUrl });
 
 server
   .use(restify.plugins.fullResponse())
@@ -77,7 +77,7 @@ server.post('/grafana-usage-report', function (req, res, next) {
   const report = req.body;
   console.log(JSON.stringify(report));
 
-  elastic.saveReport(report);
+  // elastic.saveReport(report);
 
   // group versions like 8_2_0-33922pre as 8_2_0-pre
   const cleanVersion = report.version.replace(/-[a-f0-9]+pre$/, '-pre');
