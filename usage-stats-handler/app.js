@@ -79,8 +79,14 @@ server.post('/grafana-usage-report', function (req, res, next) {
 
   // elastic.saveReport(report);
 
-  // group versions like 8_2_0-33922pre as 8_2_0-pre
-  const cleanVersion = report.version.replace(/-[a-f0-9]+pre$/, '-pre');
+  // group versions like 
+  // 8_2_0-33922pre as 8_2_0
+  // 8_2_0-12341343 as 8_2_0
+  // 8_2_0-beta1 as 8_2_0
+  // 8_2_0- as 8_2_0
+  // This reduces the cardinality of the versions stored in Graphite
+  
+  const cleanVersion = report.version.replace(/-.*/, '');
   const versionedPrefix = prefix + 'versions.' + cleanVersion + '.';
   const allPrefix = prefix + 'all.';
 
@@ -88,7 +94,6 @@ server.post('/grafana-usage-report', function (req, res, next) {
   incrementCounter(allPrefix + 'reports.count', 1);
 
   _.each(report.metrics, function(value, key) {
-    incrementCounter(versionedPrefix + key, value);
     incrementCounter(allPrefix + key, value);
   });
 
