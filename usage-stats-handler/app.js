@@ -84,7 +84,7 @@ server.post('/grafana-usage-report', function (req, res, next) {
   // 8_2_0-12341343 as 8_2_0
   // 8_2_0-beta1 as 8_2_0
   // 8_2_0- as 8_2_0
-  // This reduces the cardinality of the versions stored in Graphite
+  // This reduces the cardinality of the versions we store
   
   const cleanVersion = report.version.replace(/-.*/, '');
   const versionedPrefix = prefix + 'versions.' + cleanVersion + '.';
