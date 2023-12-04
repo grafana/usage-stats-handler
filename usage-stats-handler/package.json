@@ -4,12 +4,12 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "commander": "^7.2.0",
-    "graphite": "0.1.4",
+    "commander": "^11.1.0",
+    "graphite": "0.1.5",
     "lodash": "^4.17.21",
     "moment": "^2.24.0",
-    "restify": "^8.4.0",
-    "restify-clients": "^3.1.0"
+    "restify": "^11.1.0",
+    "restify-clients": "^4.2.0"
   },
   "devDependencies": {},
   "scripts": {
