@@ -1,4 +1,4 @@
-const program = require('commander');
+const { program } = require('commander');
 const graphite = require('graphite');
 const pkg = require('./package.json');
 const _ = require('lodash');
@@ -54,11 +54,7 @@ function incrementCounter(name, amount) {
 }
 
 function sendMetrics() {
-  /*
-  _.each(metrics, function(value, key) {
-    console.log('key: ' + key + ' = ' + value);
-  });
-  */
+  console.log(JSON.stringify({ graphite: metrics }));
 
   var client = graphite.createClient(graphiteUrl);
   client.write(metrics, function(err) {
@@ -75,17 +71,31 @@ setInterval(sendMetrics, intervalMs);
 
 server.post('/grafana-usage-report', function (req, res, next) {
   const report = req.body;
+
+  if (!_.isObject(report)) {
+    res.send(400, {message: 'invalid report'});
+    return next();
+  }
+  if (!_.isString(report.version)) {
+    res.send(400, {message: 'invalid version'});
+    return next();
+  }
+  if (!_.isObject(report.metrics)) {
+    res.send(400, {message: 'invalid metrics'});
+    return next();
+  }
+
   console.log(JSON.stringify(report));
 
   // elastic.saveReport(report);
 
-  // group versions like 
+  // group versions like
   // 8_2_0-33922pre as 8_2_0
   // 8_2_0-12341343 as 8_2_0
   // 8_2_0-beta1 as 8_2_0
   // 8_2_0- as 8_2_0
   // This reduces the cardinality of the versions we store
-  
+
   const cleanVersion = report.version.replace(/-.*/, '');
   const versionedPrefix = prefix + 'versions.' + cleanVersion + '.';
   const allPrefix = prefix + 'all.';
