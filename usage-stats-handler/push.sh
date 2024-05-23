@@ -1,6 +1,6 @@
 #/bin/sh
 IMAGENAME=grafana/usage-stats-handler
-VERSION=v11
+VERSION=v12
 
 docker build -t $IMAGENAME:latest -t $IMAGENAME:$VERSION --no-cache=true .
 
