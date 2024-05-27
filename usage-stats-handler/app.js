@@ -2,7 +2,6 @@ const { program } = require('commander');
 const graphite = require('graphite');
 const pkg = require('./package.json');
 const _ = require('lodash');
-// const elastic = require('./elastic');
 
 const restify = require('restify');
 const server = restify.createServer({name: 'grafana-usage-stats'});
@@ -26,15 +25,11 @@ program
 const options = program.opts();
 
 const graphiteUrl = 'plaintext://' + options.graphite;
-// const elasticUrl = options.elastic;
 const intervalMs = parseInt(options.interval) * 1000;
 const prefix = "grafana.usagestats.";
 
 console.log('Graphite: ' + graphiteUrl);
-// console.log('Elastic: ' + elasticUrl);
 console.log('Interval: ' + intervalMs);
-
-// elastic.initElastic({ url: elasticUrl });
 
 server
   .use(restify.plugins.fullResponse())
@@ -84,20 +79,25 @@ server.post('/grafana-usage-report', function (req, res, next) {
     res.send(400, {message: 'invalid metrics'});
     return next();
   }
+  
+  // gets the first part of the version string if it looks like a semver version.
+  // Otherwise we set the version to unknown so its at least a valid key in graphite.
+  //
+  // v2_0_3 -> 2_0_3
+  // 2_0_3 -> 2_0_3
+  // 2_0_3-123pre -> 2_0_3
+  // 2_0_3foobar -> 2_0_3
+  // foobar -> unknown
+  matches = report.version.match(/^[v]*[\d\_\d\_\d]+/);
+  if (matches == null || matches.length == 0) {
+    report.version = 'unknown';
+  } else {
+    report.version = matches[0];
+  }
 
   console.log(JSON.stringify(report));
 
-  // elastic.saveReport(report);
-
-  // group versions like
-  // 8_2_0-33922pre as 8_2_0
-  // 8_2_0-12341343 as 8_2_0
-  // 8_2_0-beta1 as 8_2_0
-  // 8_2_0- as 8_2_0
-  // This reduces the cardinality of the versions we store
-
-  const cleanVersion = report.version.replace(/-.*/, '');
-  const versionedPrefix = prefix + 'versions.' + cleanVersion + '.';
+  const versionedPrefix = prefix + 'versions.' + report.version + '.';
   const allPrefix = prefix + 'all.';
 
   incrementCounter(versionedPrefix + 'reports.count', 1);
