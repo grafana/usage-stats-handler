@@ -2,9 +2,10 @@ const { program } = require('commander');
 const graphite = require('graphite');
 const pkg = require('./package.json');
 const _ = require('lodash');
+const express = require('express');
 
-const restify = require('restify');
-const server = restify.createServer({name: 'grafana-usage-stats'});
+const app = express();
+const serverName = 'grafana-usage-stats';
 
 function parseIntOption(value) {
   // parseInt takes a string and a radix
@@ -17,8 +18,7 @@ function parseIntOption(value) {
 
 program
   .version(pkg.version)
-  .requiredOption('-g, --graphite <graphite>', 'Graphite address')
-  .option('-e, --elastic <elastic>', 'Elastic address')
+  .option('-g, --graphite <graphite>', 'Graphite address', 'graphite:2003')
   .option('--interval <seconds>', 'Interval in seconds', parseIntOption, 600)
   .parse();
 
@@ -31,10 +31,8 @@ const prefix = "grafana.usagestats.";
 console.log('Graphite: ' + graphiteUrl);
 console.log('Interval: ' + intervalMs);
 
-server
-  .use(restify.plugins.fullResponse())
-  .use(restify.plugins.queryParser())
-  .use(restify.plugins.bodyParser());
+// Express middleware
+app.use(express.json());
 
 let metrics = {};
 
@@ -64,22 +62,19 @@ function sendMetrics() {
 
 setInterval(sendMetrics, intervalMs);
 
-server.post('/grafana-usage-report', function (req, res, next) {
+app.post('/grafana-usage-report', function (req, res) {
   const report = req.body;
 
   if (!_.isObject(report)) {
-    res.send(400, {message: 'invalid report'});
-    return next();
+    return res.status(400).json({message: 'invalid report'});
   }
   if (!_.isString(report.version)) {
-    res.send(400, {message: 'invalid version'});
-    return next();
+    return res.status(400).json({message: 'invalid version'});
   }
   if (!_.isObject(report.metrics)) {
-    res.send(400, {message: 'invalid metrics'});
-    return next();
+    return res.status(400).json({message: 'invalid metrics'});
   }
-  
+
   // gets the first part of the version string if it looks like a semver version.
   // Otherwise we set the version to unknown so its at least a valid key in graphite.
   //
@@ -107,23 +102,25 @@ server.post('/grafana-usage-report', function (req, res, next) {
     incrementCounter(allPrefix + key, value);
   });
 
-  res.send({message: 'ok'});
-  return next();
+  res.json({message: 'ok'});
 });
 
-server.get('/healthz', function (req, res, next) {
-  res.send({message: 'ok'});
-  return next();
+app.get('/healthz', function (req, res) {
+  res.json({message: 'ok'});
 });
 
-server.use(function(err, req, res, next) {
+// Error handling middleware
+app.use(function(err, req, res, next) {
   if (err) {
     console.error("error!", err.toString());
     console.error(err.stack);
-    res.send(500, 'Something broke!');
+    res.status(500).send('Something broke!');
+  } else {
+    next();
   }
 });
 
-server.listen(3540, function () {
-  console.log('%s listening at %s', server.name, server.url);
+const PORT = 3540;
+app.listen(PORT, function () {
+  console.log('%s listening at http://localhost:%d', serverName, PORT);
 });

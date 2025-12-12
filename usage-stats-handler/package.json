@@ -4,14 +4,11 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "commander": "^14.0.0",
+    "commander": "^14.0.2",
+    "express": "^4.21.2",
     "graphite": "0.1.5",
-    "lodash": "^4.17.21",
-    "moment": "^2.29.4",
-    "restify": "^11.1.0",
-    "restify-clients": "^4.2.0"
+    "lodash": "^4.17.21"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
