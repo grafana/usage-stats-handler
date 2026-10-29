@@ -1,4 +1,4 @@
-FROM node:24-alpine@sha256:cd6fb7efa6490f039f3471a189214d5f548c11df1ff9e5b181aa49e22c14383e
+FROM node:24-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85
 WORKDIR /usr/src/app/
 COPY package.json yarn.lock app.js run.sh ./
 RUN yarn install --frozen-lockfile
